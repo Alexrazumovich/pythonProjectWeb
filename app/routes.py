@@ -10,8 +10,8 @@ def index():
     return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
-def registration():
-    if current_user.is_authenticated():
+def register():
+    if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -35,6 +35,7 @@ def login():
             return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check your username and password.')
+            return redirect(url_for('register'))
     return render_template('login.html', form=form)
 
 @app.route('/logout')
