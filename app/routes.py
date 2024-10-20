@@ -1,8 +1,8 @@
-from flask import render_template,redirect,flash,request,url_for
-from flask_login import login_user, current_user, logout_user, login_required
-from app import app,db,bcrypt
+from flask import render_template, request, redirect, url_for, flash
+from app import app, db, bcrypt
 from app.models import User
-from app.forms import RegistrationForm, LoginForm
+from app.forms import LoginForm, RegistrationForm
+from flask_login import login_user, logout_user, current_user, login_required
 
 @app.route('/')
 @login_required
@@ -19,9 +19,10 @@ def register():
         user = User(username=form.username.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created! You can now log in.')
+        flash('Вы успешно зарегистрировались!', 'success')
         return redirect(url_for('login'))
-    return render_template('register.html', form=form)
+    return render_template("register.html", form=form)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -34,9 +35,8 @@ def login():
             login_user(user)
             return redirect(url_for('index'))
         else:
-            flash('Login Unsuccessful. Please check your username and password.')
-            return redirect(url_for('register'))
-    return render_template('login.html', form=form)
+            flash('Неверно введены данные аккаунта', 'danger')
+    return render_template("login.html", form=form)
 
 @app.route('/logout')
 def logout():
@@ -46,8 +46,6 @@ def logout():
 @app.route('/click')
 @login_required
 def click():
-    current_user.clicks+=1
+    current_user.clicks += 1
     db.session.commit()
     return redirect(url_for('index'))
-
-
